@@ -1,0 +1,213 @@
+<!--<!DOCTYPE html>
+<html>
+<head>
+  <title>Login & Register</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .form-container {
+      width: 300px;
+      margin: 50px auto;
+      text-align: center;
+    }
+    form {
+      display: none;
+    }
+    form.active {
+      display: block;
+    }
+    input {
+      margin: 10px 0;
+      padding: 8px;
+      width: 90%;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+    }
+    .toggle-link {
+      margin-top: 10px;
+      display: block;
+      color: blue;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2 id="form-title">Register</h2>
+
+ 
+  <form id="register-form" method="POST" action="/register/" class="active">
+    {% csrf_token %}
+    <input type="text" name="user_name" placeholder="User name"><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <input type="password" name="confirm_password" placeholder="confirm Password" required><br>
+    <button type="submit">Register</button>
+    <span class="toggle-link" onclick="showLogin()">Already have an account? Login</span>
+  </form>
+
+ 
+  <form id="login-form" method="POST" action="/login/">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+    <span class="toggle-link" onclick="showRegister()">Don't have an account? Register</span>
+  </form>
+</div>
+
+<script>
+
+    alert("{{message}}");
+  function showLogin() {
+    document.getElementById('login-form').classList.add('active');
+    document.getElementById('register-form').classList.remove('active');
+    document.getElementById('form-title').innerText = "Login";
+  }
+
+  function showRegister() {
+    document.getElementById('register-form').classList.add('active');
+    document.getElementById('login-form').classList.remove('active');
+    document.getElementById('form-title').innerText = "Register";
+  }
+</script>
+
+</body>
+</html>
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voice Email Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      align-items:center;
+    }
+    form {
+      max-width: 300px;
+      margin: 20px 0;
+      text-align:center;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      margin-top: 10px;
+    }
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: blue;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h2 id="form-title">Login</h2>
+  <form id="auth-form">
+    <div id="name-field" style="display: none;">
+      <label>Name:</label>
+      <input type="text" id="name" />
+    </div>
+
+    <label>Email:</label>
+    <input type="email" id="email" required />
+
+    <label>Password:</label>
+    <input type="password" id="password" required />
+
+    <div id="confirm-password-field" style="display: none;">
+      <label>Confirm Password:</label>
+      <input type="password" id="confirm-password" />
+    </div>
+
+    <button type="submit" id="submit-btn">Login</button>
+  </form>
+
+  <p id="toggle-text">
+    Don't have an account?
+    <button class="toggle-btn" onclick="toggleForm()">Signup</button>
+  </p>
+
+  <script>
+
+
+    let isLogin = true;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+
+      document.getElementById("form-title").innerText = isLogin ? "Login" : "Signup";
+      document.getElementById("submit-btn").innerText = isLogin ? "Login" : "Signup";
+      document.getElementById("name-field").style.display = isLogin ? "none" : "block";
+      document.getElementById("confirm-password-field").style.display = isLogin ? "none" : "block";
+      document.getElementById("toggle-text").innerHTML =
+        isLogin
+          ? `Don't have an account? <button class="toggle-btn" onclick="toggleForm()">Signup</button>`
+          : `Already have an account? <button class="toggle-btn" onclick="toggleForm()">Login</button>`;
+    }
+
+    document.getElementById("auth-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      if (isLogin) {
+        const user = users.find(user => user.email === email && user.password === password);
+        if (user) {
+          alert(`Welcome back, ${user.name}!`);
+          window.location.href = '/mainpage/';
+        } else {
+          alert("Invalid email or password");
+        }
+      } else {
+        if (!name || !email || !password || !confirmPassword) {
+          alert("Please fill all fields");
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        const userExists = users.find(user => user.email === email);
+        if (userExists) {
+          alert("User already exists with this email!");
+        } else {
+          const newUser = { name, email, password };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          alert("Signup successful! Please login.");
+          toggleForm();
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice Email Generator</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Voice Email Generator</h1>
+    </div>
+
+    
+
+    <label>Select Language:</label>
+    <select id="language" class="select-lang">
+      <option value="en">English</option>
+      <option value="te">Telugu</option>
+      <option value="hi">Hindi</option>
+      <option value="ta">Tamil</option>
+      <option value="kn">Kannada</option>
+      <option value="ml">Malayalam</option>
+      <option value="gu">Gujarati</option>
+      <option value="mr">Marathi</option>
+      <option value="bn">Bengali</option>
+      <option value="ur">Urdu</option>
+      <option value="pa">Punjabi</option>
+      <option value="fr">French</option>
+      <option value="es">Spanish</option>
+      <option value="de">German</option>
+      <option value="it">Italian</option>
+      <option value="zh-cn">Chinese (Simplified)</option>
+      <option value="zh-tw">Chinese (Traditional)</option>
+      <option value="ja">Japanese</option>
+      <option value="ko">Korean</option>
+      <option value="ar">Arabic</option>
+      <option value="ru">Russian</option>
+      <option value="or">Odia</option>
+      <option value="as">Assamese</option>
+      <option value="mai">Maithili</option>
+      <option value="sat">Santali</option>
+      <option value="kok">Konkani</option>
+      <option value="sd">Sindhi</option>
+      <option value="dg">Dogri</option>
+      <option value="mni">Manipuri</option>
+      <option value="ne">Nepali</option>
+      <option value="ks">Kashmiri</option>
+    </select>
+
+    <div class="input-wrapper">
+      <div>
+        <label>To:</label>
+        <input type="text" id="to" placeholder="Enter to">
+        <button class="mic-button" onclick="toggleMic('to')">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 24 24" fill="#263d98">
+            <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zm-5 7v4h-2v-4h2z"/>
+          </svg>
+        </button>
+      </div>
+      <div>
+        <label>Subject:</label>
+        <input type="text" id="subject" placeholder="Enter subject">
+        <button class="mic-button" onclick="toggleMic('subject')">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 24 24" fill="#263d98">
+            <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zm-5 7v4h-2v-4h2z"/>
+          </svg>
+        </button>
+      </div>
+      <div>
+        <label>Body:</label>
+        <textarea id="body" placeholder="Enter body"></textarea>
+        <button class="mic-button" onclick="toggleMic('body')">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 24 24" fill="#263d98">
+            <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zm-5 7v4h-2v-4h2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btns" onclick="translateAndShow()">Translate to English</button>
+      <button class="btns" onclick="copyEmail()">Copy</button>
+      <button class="btns" onclick="sendEmail()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    let recognition;
+    let activeField = null;
+
+    function toggleMic(field) {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('Speech recognition not supported in this browser.');
+        return;
+      }
+
+      if (recognition && activeField === field) {
+        recognition.stop();
+        recognition = null;
+        activeField = null;
+        return;
+      }
+
+      const lang = document.getElementById("language").value;
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = lang;
+
+      const input = document.getElementById(field);
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0].transcript)
+          .join(' ');
+        input.value = transcript;
+      };
+
+      recognition.onerror = () => {
+        recognition.stop();
+        recognition = null;
+        activeField = null;
+      };
+
+      activeField = field;
+      recognition.start();
+    }
+
+      function translateAndShow() {
+        const bodyText = document.getElementById("body").value.trim();
+        const subjectText = document.getElementById("subject").value.trim();
+        const toText = document.getElementById("to").value.trim();
+        const selectedLang = document.getElementById("language").value;
+    
+        // Ensure at least one field has content
+        if (!bodyText && !subjectText && !toText) {
+          alert("Please enter text in at least one field to translate.");
+          return;
+        }
+    
+        const data = {
+          body: bodyText,
+          subject: subjectText,
+          to: toText,
+          lang: selectedLang
+        };
+    
+        fetch("/translate/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok.");
+          }
+          return response.json();
+        })
+        .then(translated => {
+          if (translated.error) {
+            alert("Translation failed: " + translated.error);
+            return;
+          }
+    
+          // Update the UI with translated text
+          document.getElementById("to").value = translated.to || "";
+          document.getElementById("subject").value = translated.subject || "";
+          document.getElementById("body").value = translated.body || "";
+        })
+        .catch(error => {
+          console.error("Translation error:", error);
+          alert("Error: " + error.message);
+        });
+      }
+    
+      // Utility to get CSRF token from cookie
+      function getCSRFToken() {
+        const name = "csrftoken";
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith(name + '=')) {
+            return decodeURIComponent(cookie.substring(name.length + 1));
+          }
+        }
+        return '';
+      }
+    
+    
+    
+      // Only needed if CSRF protection is enabled
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      
+      
+    
+    
+
+    function copyEmail() {
+      const to = document.getElementById("to").value;
+      const subject = document.getElementById("subject").value;
+      const body = document.getElementById("body").value;
+
+      const text = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      });
+    }
+
+    function sendEmail() {
+  const to = document.getElementById("to").value;
+  const subject = document.getElementById("subject").value;
+  const body = document.getElementById("body").value;
+
+  if (!to) {
+    alert("Recipient email is required.");
+    return;
+  }
+
+  fetch("/send-email/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRFToken()
+    },
+    body: JSON.stringify({ to, subject, body })
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.message) {
+      alert(result.message);
+    } else if (result.error) {
+      alert("Failed: " + result.error);
+    }
+  })
+  .catch(error => {
+    console.error("Email error:", error);
+    alert("Something went wrong!");
+  });
+}
+
+  </script>
+</body>
+</html>

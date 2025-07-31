@@ -1,0 +1,175 @@
+body {
+    background: lightgrey;/*linear-gradient(135deg, #A7C7FF, #B9D6FF);  *//* Light blue gradient */
+    font-family: Arial, sans-serif;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  
+  /* Main container with white background */
+  .container {
+    font-family: Arial, sans-serif;
+    width: 950px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;  /* White background for the container */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: #333; 
+  }
+  
+  /* Header section with gradient text */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+    margin-left: 10px;
+    color: linear-gradient(135deg, #A7C7FF, #B9D6FF); /* Light gradient text */
+    background: transparent;
+    font-weight: 600;
+  }
+  
+  .header svg {
+    fill: #A7C7FF;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    text-align: center;
+    color: linear-gradient(135deg, #A7C7FF, #B9D6FF); /* Light gradient text */
+    background: transparent;
+  }
+  
+  p {
+    color: #777;
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+  
+  /* Language selection dropdown */
+  .select-lang {
+    padding: 8px;
+    margin: 10px 0 20px;
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.3s;
+  }
+  
+  .select-lang:hover {
+    border-color: #A7C7FF;  /* Light blue border on hover */
+  }
+  
+  /* Input field styling */
+  .input-wrapper {
+    margin-bottom: 20px;
+  }
+  
+  .input-wrapper div {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    resize: none;
+    background-color: #f7f7f7;
+    color: #333;
+  }
+  
+  textarea {
+    height: 100px;
+  }
+  
+  /* Mic button styles */
+  button.mic-button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    color: #263d98;  
+  }
+  
+  button.mic-button:hover {
+    background-color: #f0f0f0;
+    border-color: #301571;  /* Lighter blue border on hover */
+  }
+  
+  button.mic-button svg {
+    width: 20px;
+    height: 20px;
+    fill: grey/*linear-gradient(135deg, #A7C7FF, #B9D6FF); */ /* Light blue gradient mic symbol */
+  }
+  
+  /* Button styles for Copy and Send */
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .btns {
+    display: flex;
+    align-items: center;
+    background-color: #A7C7FF;  /* Light blue button background */
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+  }
+  
+  .btns:hover {
+    background-color: #B9D6FF;
+ /* Lighter blue on hover */
+  }
+  
+  .btns svg {
+    margin-right: 8px;
+  }
+  
+  .btns {
+    background-color: grey;
+    color:black
+  }
+  
+  .btns:hover {
+    background-color: darkgrey;
+  }
+  
+  
+  /* Success check icon */
+  .check-icon {
+    fill: white;
+    margin-right: 5px;
+  }
+  
+  /* Mic button hover effect */
+  .mic-button:hover svg {
+    fill: green;  /* Light blue color on hover */
+  }
